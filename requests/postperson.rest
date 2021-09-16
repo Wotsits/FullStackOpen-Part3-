@@ -1,0 +1,34 @@
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "this is the content",
+    "number": "01323-440923"
+}
+
+###
+
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "this is the content"
+}
+
+###
+
+GET http://localhost:3001/api/persons
+content-type:application/json
+
+###
+
+GET http://localhost:3001/api/persons/someInvalidID
+content-type: application/json
+
+###
+
+
+GET http://localhost:3001/info
+content-type: application/json
+
+###
