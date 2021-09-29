@@ -56,7 +56,11 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
     const updatedData = request.body
     
-    Person.findByIdAndUpdate(request.params.id, updatedData, { new: true })
+    Person.findByIdAndUpdate(request.params.id, updatedData, { 
+        new: true, 
+        runValidators: true, 
+        context: 'query' 
+    })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
@@ -66,10 +70,6 @@ app.put("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons", (request, response, next) => {
     
     const newPerson = request.body
-
-    if ((!newPerson.name) || (!newPerson.number)) {
-        return response.status(400).json({"error": "content missing"})
-    }
     
     const person = new Person({
         name: newPerson.name,
@@ -87,13 +87,16 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).send({error:'malformatted id'})
     }
+    if (error.name === "ValidationError") {
+        return response.status(400).json({error: error.message})
+    }
     next(error)
 }
 
 app.use(errorHandler)
 
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
     console.log(`Server runnning on port ${PORT}`)
